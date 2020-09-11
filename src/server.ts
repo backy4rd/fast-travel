@@ -1,16 +1,12 @@
 import * as dotenv from 'dotenv';
-import app from './app';
-import * as mongoose from 'mongoose';
-
 dotenv.config();
+import app from './app';
+import waitConnection from './connection';
 
-const { PORT, MONGODB_URI } = process.env;
+const { PORT } = process.env;
 
-mongoose.connect(MONGODB_URI as string, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-app.listen(PORT, () => {
-  console.log(`server is listening on port ${PORT} !!!`);
+waitConnection().then(() => {
+  app.listen(PORT, () => {
+    console.log(`server is listening on port ${PORT} !!!`);
+  });
 });

@@ -15,7 +15,7 @@ class Logger {
     constructor() {
         this.logDir = path.resolve(__dirname, '../../.log');
         this.currentDay = new Date();
-        this.logPath = this.getLogPath(this.currentDay);
+        this.logPath = this.genLogPath(this.currentDay);
         this.logStream = fs.createWriteStream(this.logPath, { flags: 'a' });
     }
     error(_err) {
@@ -27,7 +27,7 @@ class Logger {
             const message = `[${now} - ${_type}]: ${_message}\n\n`;
             // Create new log file for new day
             if (now.getDate() !== this.currentDay.getDate()) {
-                this.logPath = this.getLogPath(now);
+                this.logPath = this.genLogPath(now);
                 this.currentDay = now;
                 this.logStream.close();
                 this.logStream = fs.createWriteStream(this.logPath, { flags: 'a' });
@@ -35,7 +35,7 @@ class Logger {
             this.logStream.write(message);
         });
     }
-    getLogPath(date) {
+    genLogPath(date) {
         const day = date.getDate();
         const month = date.getMonth();
         const year = date.getFullYear();

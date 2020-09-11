@@ -9,7 +9,7 @@ class Logger {
   private logStream: WriteStream;
 
   constructor() {
-    this.logPath = this.getLogPath(this.currentDay);
+    this.logPath = this.genLogPath(this.currentDay);
     this.logStream = fs.createWriteStream(this.logPath, { flags: 'a' });
   }
 
@@ -23,7 +23,7 @@ class Logger {
 
     // Create new log file for new day
     if (now.getDate() !== this.currentDay.getDate()) {
-      this.logPath = this.getLogPath(now);
+      this.logPath = this.genLogPath(now);
       this.currentDay = now;
 
       this.logStream.close();
@@ -33,7 +33,7 @@ class Logger {
     this.logStream.write(message);
   }
 
-  private getLogPath(date: Date): string {
+  private genLogPath(date: Date): string {
     const day = date.getDate();
     const month = date.getMonth();
     const year = date.getFullYear();

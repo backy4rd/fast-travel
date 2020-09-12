@@ -8,6 +8,7 @@ export interface IProfile {
 export interface IUserBase {
   email: string;
   password: string;
+  uuid: string;
   profile: IProfile;
   urls: IUrl[];
 }

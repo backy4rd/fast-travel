@@ -11,11 +11,15 @@
   "license": "ISC",
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
+    "@types/chai": "^4.2.12",
+    "@types/uuid": "^8.3.0",
     "async-redis": "^1.1.7",
     "bcrypt": "^5.0.0",
+    "chai": "^4.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mongoose": "^5.10.2"
+    "mongoose": "^5.10.2",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@types/async-redis": "^1.1.1",

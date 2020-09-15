@@ -8,6 +8,7 @@ const SALT_ROUND = parseInt(process.env.SALT_ROUND);
 
 export interface IUser extends IUserBase, Document {
   comparePassword(password: string): Promise<boolean>;
+  changePassword(oldPassword: string, newPassword: string): Promise<void>;
 }
 
 interface IUserModel extends Model<IUser> {
@@ -84,6 +85,19 @@ UserSchema.statics.genUUID = function () {
 
 UserSchema.methods.comparePassword = function (password: string) {
   return bcrypt.compare(password, this.password);
+};
+
+UserSchema.methods.changePassword = async function (
+  oldPassword: string,
+  newPassword: string,
+) {
+  const isMatch = await this.comparePassword(oldPassword, this.password);
+  if (!isMatch) {
+    throw new Error("Password don't match");
+  }
+
+  this.password = newPassword;
+  await this.save();
 };
 
 const User = model<IUser, IUserModel>('User', UserSchema);

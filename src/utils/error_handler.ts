@@ -23,7 +23,7 @@ export function clientErrorHandler(
     });
   }
 
-  next();
+  next(err);
 }
 
 export function serverErrorHandler(

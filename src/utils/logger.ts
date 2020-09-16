@@ -14,12 +14,12 @@ class Logger {
   }
 
   public error(_err: Error): Promise<void> {
-    return this.writeLog('ERROR', _err.stack);
+    return this.writeLog('ERROR', _err.stack + '\n');
   }
 
   private async writeLog(_type: string, _message: string): Promise<void> {
     const now: Date = new Date();
-    const message = `[${now} - ${_type}]: ${_message}\n\n`;
+    const message = `[${now} - ${_type}]: ${_message}\n`;
 
     // Create new log file for new day
     if (now.getDate() !== this.currentDay.getDate()) {

@@ -54,13 +54,6 @@ export const UserSchema = new Schema(
         match: [/^[a-zA-Z\s]+$/, 'Last name contained invalid character'],
       },
     },
-    urls: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Url',
-        required: true,
-      },
-    ],
   },
   { timestamps: true, versionKey: false },
 );

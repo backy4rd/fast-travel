@@ -1,5 +1,3 @@
-import { IUrl } from '../models/Url';
-
 export interface IProfile {
   firstName: string;
   lastName: string;
@@ -10,5 +8,4 @@ export interface IUserBase {
   password: string;
   uuid: string;
   profile: IProfile;
-  urls: IUrl[];
 }

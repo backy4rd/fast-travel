@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { NextFunction, Request, Response, RequestHandler } from 'express';
+
 import { redisClient } from '../connection';
 import User from '../models/User';
 
@@ -23,7 +24,6 @@ class AuthController {
         firstName: firstName,
         lastName: lastName,
       },
-      urls: [],
     });
 
     return res.status(201).json({
@@ -70,7 +70,12 @@ class AuthController {
   public authorize({ require }): RequestHandler {
     return async (req: Request, res: Response, next: NextFunction) => {
       const { uuid } = req.cookies;
-      expect(uuid, '401:Unauthorized').to.exist;
+      if (require) {
+        expect(uuid, '401:Unauthorized').to.exist;
+      }
+      if (!uuid && !require) {
+        return next();
+      }
 
       const cachedData: any = await redisClient.hgetall(uuid);
 
@@ -81,10 +86,10 @@ class AuthController {
 
       const user = await User.findOne({ uuid: uuid });
 
-      if (require === true) {
+      if (require) {
         expect(user, '401:Unauthorized').to.not.be.null;
       }
-      if (user === null && require === false) {
+      if (user === null && !require) {
         return next();
       }
 

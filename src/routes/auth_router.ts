@@ -19,7 +19,7 @@ router.post('/signin', asyncHandler(authController.signIn));
 // change password
 router.post(
   '/reset',
-  asyncHandler(authController.authorize),
+  asyncHandler(authController.authorize({ require: true })),
   asyncHandler(authController.changePassword),
 );
 

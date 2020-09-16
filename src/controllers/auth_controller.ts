@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response, RequestHandler } from 'express';
 import { redisClient } from '../connection';
 import User from '../models/User';
 
@@ -67,37 +67,45 @@ class AuthController {
     });
   }
 
-  public async authorize(req: Request, res: Response, next: NextFunction) {
-    const { uuid } = req.cookies;
-    expect(uuid, '401:Unauthorized').to.exist;
+  public authorize({ require }): RequestHandler {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      const { uuid } = req.cookies;
+      expect(uuid, '401:Unauthorized').to.exist;
 
-    const cachedData: any = await redisClient.hgetall(uuid);
+      const cachedData: any = await redisClient.hgetall(uuid);
 
-    if (cachedData !== null) {
-      req.local.auth = cachedData;
-      return next();
-    }
+      if (cachedData !== null) {
+        req.local.auth = cachedData;
+        return next();
+      }
 
-    const user = await User.findOne({ uuid: uuid });
-    expect(user, '401:Unauthorized').to.not.be.null;
+      const user = await User.findOne({ uuid: uuid });
 
-    await redisClient.hset(user.uuid, [
-      'email',
-      user.email,
-      'firstName',
-      user.profile.firstName,
-      'lastName',
-      user.profile.lastName,
-    ]);
-    await redisClient.expire(user.uuid, 20);
+      if (require === true) {
+        expect(user, '401:Unauthorized').to.not.be.null;
+      }
+      if (user === null && require === false) {
+        return next();
+      }
 
-    req.local.auth = {
-      email: user.email,
-      firstName: user.profile.firstName,
-      lastName: user.profile.lastName,
+      await redisClient.hset(user.uuid, [
+        'email',
+        user.email,
+        'firstName',
+        user.profile.firstName,
+        'lastName',
+        user.profile.lastName,
+      ]);
+      await redisClient.expire(user.uuid, 20);
+
+      req.local.auth = {
+        email: user.email,
+        firstName: user.profile.firstName,
+        lastName: user.profile.lastName,
+      };
+
+      next();
     };
-
-    next();
   }
 
   // require authorized

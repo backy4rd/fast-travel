@@ -12,6 +12,9 @@ class AuthController {
     expect(firstName, '400:First name is required').to.exist;
     expect(lastName, '400:Last name is required').to.exist;
 
+    const isEmailWasRegistered = await User.isEmailWasRegistered(email);
+    expect(isEmailWasRegistered, '400:Email was registered').to.not.be.true;
+
     await User.create({
       email: email,
       password: password,
@@ -59,7 +62,7 @@ class AuthController {
     }
 
     res.cookie('uuid', user.uuid, { httpOnly: true });
-    res.status(200).json({
+    return res.status(200).json({
       data: { message: 'Sign in success' },
     });
   }
@@ -107,16 +110,13 @@ class AuthController {
 
     const user = await User.findOne({ email: email });
 
-    try {
-      await user.changePassword(oldPassword, newPassword);
-      res.status(200).json({
-        data: { message: 'Change password success' },
-      });
-    } catch (err) {
-      res.status(400).json({
-        error: { message: err.message },
-      });
-    }
+    const isMatch = await user.comparePassword(oldPassword);
+    expect(isMatch, "400:Password don't match").to.be.true;
+
+    await user.changePassword(newPassword);
+    return res.status(200).json({
+      data: { message: 'Change password success' },
+    });
   }
 }
 

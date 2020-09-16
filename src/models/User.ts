@@ -8,11 +8,12 @@ const SALT_ROUND = parseInt(process.env.SALT_ROUND);
 
 export interface IUser extends IUserBase, Document {
   comparePassword(password: string): Promise<boolean>;
-  changePassword(oldPassword: string, newPassword: string): Promise<void>;
+  changePassword(newPassword: string): Promise<void>;
 }
 
 interface IUserModel extends Model<IUser> {
   genUUID(): string;
+  isEmailWasRegistered(email: string): Promise<boolean>;
 }
 
 export const UserSchema = new Schema(
@@ -25,7 +26,7 @@ export const UserSchema = new Schema(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         'Invalid email address',
       ],
-      index: { unique: true },
+      index: true,
     },
     password: {
       type: String,
@@ -78,24 +79,21 @@ UserSchema.pre<IUser>('save', async function () {
   this.password = await bcrypt.hash(this.password, SALT_ROUND);
 });
 
-// Methods
+// Static methods
 UserSchema.statics.genUUID = function () {
   return uuid.v4();
 };
 
+UserSchema.statics.isEmailWasRegistered = async function (email: string) {
+  return this.exists({ email: email });
+};
+
+// Methods
 UserSchema.methods.comparePassword = function (password: string) {
   return bcrypt.compare(password, this.password);
 };
 
-UserSchema.methods.changePassword = async function (
-  oldPassword: string,
-  newPassword: string,
-) {
-  const isMatch = await this.comparePassword(oldPassword, this.password);
-  if (!isMatch) {
-    throw new Error("Password don't match");
-  }
-
+UserSchema.methods.changePassword = async function (newPassword: string) {
   this.password = newPassword;
   await this.save();
 };

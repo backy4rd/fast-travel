@@ -4,6 +4,7 @@
     "module": "commonjs",
     "outDir": "build/",
     "sourceMap": true,
+    "noUnusedLocals": true,
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
   "include": ["./src/**/*.ts"],

@@ -17,9 +17,10 @@ export function clientErrorHandler(
   }
 
   if (/ValidationError/.test(errString)) {
-    const [, , message] = err.message.split(': ');
+    const validations = err.message.slice(err.message.indexOf(': ') + 2);
+    const messages = validations.split(', ').map((v) => v.split(': ')[1]);
     return res.status(400).json({
-      error: { message: message },
+      error: { message: messages },
     });
   }
 

@@ -18,6 +18,13 @@ router.post(
   asyncHandler(urlController.shortenUrl),
 );
 
+// get own urls
+router.get(
+  '/',
+  asyncHandler(authController.authorize({ require: true })),
+  asyncHandler(urlController.getUrls),
+);
+
 // delete url
 router.delete(
   '/:endpoint([0-9A-Za-z]{6})',

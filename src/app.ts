@@ -18,7 +18,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/api/auth', authRouter);
-app.use('/api/url', urlRouter);
+app.use('/api/urls', urlRouter);
 
 app.use(clientErrorHandler);
 app.use(serverErrorHandler);

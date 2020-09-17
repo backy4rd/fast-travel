@@ -56,6 +56,18 @@ class UrlController {
     await redisClient.expire(endpoint, parseInt(URL_CACHE_EXPIRE_TIME));
   }
 
+  public async getUrls(req: Request, res: Response) {
+    const { email } = req.local.auth;
+
+    const urls = await Url.find({ createdBy: email }).select(
+      '-_id -clicks._id',
+    );
+
+    res.status(200).json({
+      data: urls,
+    });
+  }
+
   public async shortenUrl(req: Request, res: Response) {
     const { url } = req.body;
 

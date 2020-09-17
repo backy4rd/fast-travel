@@ -1,8 +1,11 @@
 import { expect } from 'chai';
 import { Request, Response } from 'express';
+
 import { redisClient } from '../connection';
 import { IClick } from '../interfaces/IUrl';
 import Url from '../models/Url';
+
+const { URL_CACHE_EXPIRE_TIME } = process.env;
 
 class UrlController {
   public async getUrl(req: Request, res: Response) {
@@ -50,7 +53,7 @@ class UrlController {
       'url',
       url.url,
     ]);
-    await redisClient.expire(endpoint, 20);
+    await redisClient.expire(endpoint, parseInt(URL_CACHE_EXPIRE_TIME));
   }
 
   public async shortenUrl(req: Request, res: Response) {

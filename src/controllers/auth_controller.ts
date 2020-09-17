@@ -4,6 +4,8 @@ import { NextFunction, Request, Response, RequestHandler } from 'express';
 import { redisClient } from '../connection';
 import User from '../models/User';
 
+const { UUID_CACHE_EXPIRE_TIME } = process.env;
+
 class AuthController {
   public async signUp(req: Request, res: Response) {
     const { email, password, firstName, lastName } = req.body;
@@ -58,7 +60,7 @@ class AuthController {
         'lastName',
         user.profile.lastName,
       ]);
-      await redisClient.expire(user.uuid, 20);
+      await redisClient.expire(user.uuid, parseInt(UUID_CACHE_EXPIRE_TIME));
     }
 
     res.cookie('uuid', user.uuid, { httpOnly: true });
@@ -101,7 +103,7 @@ class AuthController {
         'lastName',
         user.profile.lastName,
       ]);
-      await redisClient.expire(user.uuid, 20);
+      await redisClient.expire(user.uuid, parseInt(UUID_CACHE_EXPIRE_TIME));
 
       req.local.auth = {
         email: user.email,

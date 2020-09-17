@@ -35,7 +35,7 @@ class UrlController {
     }
 
     const url = await Url.findOne({ endpoint: endpoint });
-    expect(url, '404:Not found').to.not.be.null;
+    expect(url, '404:Endpoint not found').to.not.be.null;
 
     res.status(200).json({
       data: {

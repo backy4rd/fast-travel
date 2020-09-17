@@ -38,3 +38,9 @@ export function serverErrorHandler(
     error: { message: 'Internal server error' },
   });
 }
+
+export function notFoundErrorHandler(req: Request, res: Response) {
+  return res.status(404).json({
+    error: { message: 'Not found' },
+  });
+}

@@ -37,6 +37,7 @@ export const UserSchema = new Schema(
     },
     uuid: {
       type: String,
+      default: null,
       match: [
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
         'Invalid UUID format',

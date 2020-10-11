@@ -35,20 +35,21 @@ export const UrlSchema = new Schema(
     },
     clicks: [
       {
-        referrer: { type: String },
-        userAgent: { type: String },
-        ipAddress: { type: String },
-        createdAt: { type: Date, default: Date.now() },
+        referrer: { type: String, default: null },
+        userAgent: { type: String, default: null },
+        ipAddress: { type: String, default: null },
+        createdAt: { type: Date, default: Date.now },
       },
     ],
     createdBy: {
       type: String,
+      default: null,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         'Invalid email address',
       ],
     },
-    createdAt: { type: Date, default: Date.now() },
+    createdAt: { type: Date, default: Date.now },
   },
   { versionKey: false },
 );

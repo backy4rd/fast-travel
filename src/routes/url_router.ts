@@ -3,7 +3,6 @@ import * as cookieParser from 'cookie-parser';
 
 import urlController from '../controllers/url_controller';
 import authController from '../controllers/auth_controller';
-import asyncHandler from '../utils/async_handler';
 
 const router = express.Router();
 
@@ -12,27 +11,19 @@ router.use(express.json());
 router.use(cookieParser());
 
 // shorten url
-router.post(
-  '/',
-  asyncHandler(authController.authorize({ require: false })),
-  asyncHandler(urlController.shortenUrl),
-);
+router.post('/', authController.identify, urlController.shortenUrl);
 
 // get own urls
-router.get(
-  '/',
-  asyncHandler(authController.authorize({ require: true })),
-  asyncHandler(urlController.getUrls),
-);
+router.get('/', authController.authorize, urlController.getUrls);
 
 // delete url
 router.delete(
   '/:endpoint([0-9A-Za-z]{6})',
-  asyncHandler(authController.authorize({ require: true })),
-  asyncHandler(urlController.deleteUrl),
+  authController.authorize,
+  urlController.deleteUrl,
 );
 
 // get url
-router.get('/:endpoint([0-9A-Za-z]{6})', asyncHandler(urlController.getUrl));
+router.get('/:endpoint([0-9A-Za-z]{6})', urlController.getUrl);
 
 export default router;

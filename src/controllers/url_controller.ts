@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { Request, Response } from 'express';
 
+import asyncHandler from '../utils/async_handler';
 import { redisClient } from '../connection';
 import { IClick } from '../interfaces/IUrl';
 import Url from '../models/Url';
@@ -8,6 +9,7 @@ import Url from '../models/Url';
 const { URL_CACHE_EXPIRE_TIME } = process.env;
 
 class UrlController {
+  @asyncHandler
   public async getUrl(req: Request, res: Response) {
     const { endpoint } = req.params;
 
@@ -56,6 +58,7 @@ class UrlController {
     await redisClient.expire(endpoint, parseInt(URL_CACHE_EXPIRE_TIME));
   }
 
+  @asyncHandler
   public async getUrls(req: Request, res: Response) {
     const { email } = req.local.auth;
 
@@ -68,6 +71,7 @@ class UrlController {
     });
   }
 
+  @asyncHandler
   public async shortenUrl(req: Request, res: Response) {
     const { url } = req.body;
 
@@ -97,6 +101,7 @@ class UrlController {
   }
 
   // require authorize
+  @asyncHandler
   public async deleteUrl(req: Request, res: Response) {
     const { endpoint } = req.params;
     const { email } = req.local.auth;

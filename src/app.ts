@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import { Application, NextFunction, Request, Response } from 'express';
 
 import authRouter from './routes/auth_router';
@@ -11,6 +12,8 @@ import {
 } from './utils/error_handler';
 
 const app: Application = express();
+
+app.use(cors());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   req.local = {};

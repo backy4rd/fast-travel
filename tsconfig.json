@@ -5,7 +5,8 @@
     "outDir": "build/",
     "sourceMap": true,
     "noUnusedLocals": true,
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "experimentalDecorators": true
   },
   "include": ["./src/**/*.ts"],
   "exclude": ["node_modules", "./src/types"]

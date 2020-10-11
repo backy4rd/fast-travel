@@ -1,7 +1,17 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-export default (middleware: RequestHandler): RequestHandler => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    middleware(req, res, next).catch(next);
+export default function asyncHandler(
+  target: Object,
+  propertyKey: string,
+  descriptor: PropertyDescriptor,
+) {
+  const method = descriptor.value;
+
+  descriptor.value = function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    return method.apply(this, arguments).catch(next);
   };
-};
+}
